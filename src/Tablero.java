@@ -1,58 +1,56 @@
+import java.util.Arrays;
+
 public class Tablero {
-    private Soldado[][] celdas;
+    private String[][] tablero;
 
     public Tablero(int filas, int columnas) {
-        celdas = new Soldado[filas][columnas];
+        tablero = new String[filas][columnas];
+        for (String[] fila : tablero) {
+            Arrays.fill(fila, "_");
+        }
     }
 
     public boolean colocarSoldado(Soldado soldado, int fila, int columna) {
-        if (celdas[fila][columna] == null) {
-            celdas[fila][columna] = soldado;
+        if (tablero[fila][columna].equals("_")) {
+            tablero[fila][columna] = soldado.getNombre();
             return true;
         }
         return false;
     }
 
-    public boolean moverSoldado(int fila, int columna, String direccion) {
-        if (celdas[fila][columna] == null) return false;
-        int[] nuevaPos = calcularNuevaPosicion(fila, columna, direccion);
-        int nuevaFila = nuevaPos[0], nuevaColumna = nuevaPos[1];
-
-        if (nuevaFila < 0 || nuevaFila >= celdas.length || nuevaColumna < 0 || nuevaColumna >= celdas[0].length) {
-            return false;
+    public boolean moverSoldado(int filaActual, int colActual, int nuevaFila, int nuevaColumna) {
+        if (tablero[nuevaFila][nuevaColumna].equals("_")) {
+            tablero[nuevaFila][nuevaColumna] = tablero[filaActual][colActual];
+            tablero[filaActual][colActual] = "_";
+            return true;
         }
-
-        if (celdas[nuevaFila][nuevaColumna] != null) {
-            Soldado ganador = batallar(celdas[fila][columna], celdas[nuevaFila][nuevaColumna]);
-            celdas[nuevaFila][nuevaColumna] = ganador;
-        } else {
-            celdas[nuevaFila][nuevaColumna] = celdas[fila][columna];
-        }
-        celdas[fila][columna] = null;
-        return true;
+        return false;
     }
 
-    public void mostrar() {
-        for (Soldado[] fila : celdas) {
-            for (Soldado celda : fila) {
-                System.out.print(celda == null ? " _ " : " " + celda.getRepresentacion() + " ");
+    public boolean estaDentroDelLimite(int fila, int columna) {
+        return fila >= 0 && fila < tablero.length && columna >= 0 && columna < tablero[0].length;
+    }
+
+    public boolean haySoldado(int fila, int columna) {
+        return !tablero[fila][columna].equals("_");
+    }
+
+    public String mostrar() {
+        StringBuilder sb = new StringBuilder();
+        for (String[] fila : tablero) {
+            for (String celda : fila) {
+                sb.append(celda).append(" ");
             }
-            System.out.println();
+            sb.append("\n");
         }
+        return sb.toString();
     }
 
-    private int[] calcularNuevaPosicion(int fila, int columna, String direccion) {
-        switch (direccion.toLowerCase()) {
-            case "arriba": return new int[]{fila - 1, columna};
-            case "abajo": return new int[]{fila + 1, columna};
-            case "izquierda": return new int[]{fila, columna - 1};
-            case "derecha": return new int[]{fila, columna + 1};
-        }
-        return new int[]{fila, columna};
+    public int getFilas() {
+        return tablero.length;
     }
 
-    private Soldado batallar(Soldado s1, Soldado s2) {
-        double probabilidad1 = (double) s1.getNivelVida() / (s1.getNivelVida() + s2.getNivelVida());
-        return Math.random() < probabilidad1 ? s1 : s2;
+    public int getColumnas() {
+        return tablero[0].length;
     }
 }
