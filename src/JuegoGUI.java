@@ -27,5 +27,20 @@ public class JuegoGUI extends JFrame {
 
         JButton btnMover = new JButton("Mover Soldado");
         JButton btnMostrar = new JButton("Mostrar Tablero");
+
+        JComboBox<String> direccionCombo = new JComboBox<>(new String[]{"Arriba", "Abajo", "Izquierda", "Derecha"});
+        JTextField coordenadasTexto = new JTextField();
+
+        panelControles.add(new JLabel("Coordenadas:"));
+        panelControles.add(coordenadasTexto);
+        panelControles.add(new JLabel("Direccion:"));
+        panelControles.add(direccionCombo);
+        panelControles.add(btnMover);
+        panelControles.add(btnMostrar);
+
+        panelPrincipal.add(panelControles, BorderLayout.NORTH);
+        panelPrincipal.add(scrollEstado, BorderLayout.CENTER);
+
+        add(panelPrincipal, BorderLayout.CENTER);
     }
 }
