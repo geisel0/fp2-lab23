@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class JuegoGUI extends JFrame {
+public class JuegoEstrategiaGUI extends JFrame {
     private Tablero tablero;
     private Ejercito ejercito1;
     private Ejercito ejercito2;
@@ -42,5 +42,45 @@ public class JuegoGUI extends JFrame {
         panelPrincipal.add(scrollEstado, BorderLayout.CENTER);
 
         add(panelPrincipal, BorderLayout.CENTER);
+
+        btnMover.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String coordenadas = coordenadasTexto.getText();
+                String direccion = (String) direccionCombo.getSelectedItem();
+                moverSoldado(coordenadas, direccion);
+            }
+        });
+
+        btnMostrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarTablero();
+            }
+        });
+
+        inicializarJuego();
+    }
+
+    private void inicializarJuego() {
+        ejercito1.generarSoldados(tablero, "bosque");
+        ejercito2.generarSoldados(tablero, "campo abierto");
+        mostrarTablero();
+    }
+
+    private void moverSoldado(String coordenadas, String direccion) {
+        areaEstado.append("Mover soldado en " + coordenadas + " hacia " + direccion + "\n");
+    }
+
+    private void mostrarTablero() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(tablero.mostrar());
+        areaEstado.setText(sb.toString());
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new JuegoEstrategiaGUI().setVisible(true;
+        });
     }
 }
