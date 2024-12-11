@@ -3,13 +3,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class JuegoEstrategiaGUI extends JFrame {
+public class JuegoGUI extends JFrame {
     private Tablero tablero;
     private Ejercito ejercito1;
     private Ejercito ejercito2;
     private JTextArea areaEstado;
 
-    public JuegoEstrategiaGUI() {
+    public JuegoGUI() {
         setTitle("Juego de Estrategia");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,18 +69,57 @@ public class JuegoEstrategiaGUI extends JFrame {
     }
 
     private void moverSoldado(String coordenadas, String direccion) {
-        areaEstado.append("Mover soldado en " + coordenadas + " hacia " + direccion + "\n");
+        try {
+            String[] partes = coordenadas.split(",");
+            int fila = Integer.parseInt(partes[0].trim());
+            int columna = Integer.parseInt(partes[1].trim());
+
+            if (!tablero.estaDentroDelLimite(fila, columna) || !tablero.haySoldado(fila, columna)) {
+                areaEstado.append("Coordenadas invalidas o no hay soldado en esa posicion.\n");
+                return;
+            }
+
+            int nuevaFila = fila, nuevaColumna = columna;
+
+            switch (direccion) {
+                case "Arriba":
+                    nuevaFila--;
+                    break;
+                case "Abajo":
+                    nuevaFila++;
+                    break;
+                case "Izquierda":
+                    nuevaColumna--;
+                    break;
+                case "Derecha":
+                    nuevaColumna++;
+                    break;
+            }
+
+            if (!tablero.estaDentroDelLimite(nuevaFila, nuevaColumna)) {
+                areaEstado.append("Movimiento fuera de los limites del tablero.\n");
+                return;
+            }
+
+            if (tablero.moverSoldado(fila, columna, nuevaFila, nuevaColumna)) {
+                areaEstado.append("Soldado movido de (" + fila + "," + columna + ") a (" + nuevaFila + "," + nuevaColumna + ").\n");
+            } else {
+                areaEstado.append("La posicion destino esta ocupada.\n");
+            }
+
+            mostrarTablero();
+        } catch (Exception ex) {
+            areaEstado.append("Error al interpretar las coordenadas. Use el formato: fila,columna\n");
+        }
     }
 
     private void mostrarTablero() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(tablero.mostrar());
-        areaEstado.setText(sb.toString());
+        areaEstado.setText(tablero.mostrar());
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new JuegoEstrategiaGUI().setVisible(true;
+            new JuegoEstrategiaGUI().setVisible(true);
         });
     }
 }
